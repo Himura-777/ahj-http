@@ -1,8 +1,8 @@
-name: Netology AHJ Deployment
+name: Netology AHJ
 
 on:
   push:
-    branches: [ main ] # Запускать только при пуше в main ветку
+    branches: [ main ]
   workflow_dispatch:
 
 permissions:
@@ -23,30 +23,41 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
-      - run: npm ci
-      - run: npm run lint
+      - name: Install dependencies
+        run: |
+          cd ahj-http/helpdesk/frontend
+          npm ci
+      - name: Run lint
+        run: |
+          cd ahj-http/helpdesk/frontend
+          npm run lint
 
-  build-and-deploy:
+  build:
     needs: lint
     runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
-      - run: npm ci
-      - run: npm run build
+      - name: Install dependencies
+        run: |
+          cd ahj-http/helpdesk/frontend
+          npm ci
+      - name: Build project
+        run: |
+          cd ahj-http/helpdesk/frontend
+          npm run build
       - name: Setup Pages
         uses: actions/configure-pages@v4
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: 'dist'
+          path: 'ahj-http/helpdesk/frontend/dist'
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
