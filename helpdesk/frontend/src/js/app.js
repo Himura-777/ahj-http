@@ -1,6 +1,6 @@
 import '../css/style.css';
-import HelpDesk from './HelpDesk.js';
-import TicketService from './TicketService.js';
+import HelpDesk from './HelpDesk';
+import TicketService from './TicketService';
 
 const root = document.getElementById('root');
 

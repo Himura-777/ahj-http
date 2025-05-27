@@ -2,8 +2,6 @@
  *  Класс для создания формы создания нового тикета
  * */
 export default class TicketForm {
-  constructor() {}
-
   static createForm(ticket = null) {
     const form = document.createElement('form');
     form.className = 'ticket-form';

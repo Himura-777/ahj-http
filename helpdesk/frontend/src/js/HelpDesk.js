@@ -1,8 +1,8 @@
 /**
  *  Основной класс приложения
  * */
-import TicketView from './TicketView.js';
-import TicketForm from './TicketForm.js';
+import TicketView from './TicketView';
+import TicketForm from './TicketForm';
 
 export default class HelpDesk {
   constructor(container, ticketService) {
@@ -133,7 +133,7 @@ export default class HelpDesk {
   }
 
   async deleteTicket(id) {
-    if (!confirm('Вы уверены, что хотите удалить тикет?')) return;
+    if (!window.confirm('Вы уверены, что хотите удалить тикет?')) return;
 
     try {
       await this.ticketService.delete(id);

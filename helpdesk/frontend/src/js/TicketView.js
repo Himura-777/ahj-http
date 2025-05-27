@@ -3,8 +3,6 @@
  *  Он содержит методы для генерации разметки тикета.
  * */
 export default class TicketView {
-  constructor() {}
-
   static createTicketElement(ticket) {
     const ticketEl = document.createElement('div');
     ticketEl.className = 'ticket';
