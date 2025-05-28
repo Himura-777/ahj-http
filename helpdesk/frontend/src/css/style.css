@@ -145,3 +145,55 @@ button[type='submit'] {
   text-align: center;
   padding: 20px;
 }
+
+.ticket-form .error-message {
+  color: #f44336;
+  margin-top: 10px;
+  font-size: 0.9em;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.confirm-modal {
+  background: white;
+  padding: 20px;
+  border-radius: 30px;
+  width: 400px;
+  max-width: 90%;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+button.danger {
+  background: #f44336;
+  color: white;
+}
+
+.ticket-form .form-error {
+  color: #f44336;
+  min-height: 20px;
+  font-size: 0.9em;
+  margin-top: 5px;
+}
+
+.ticket-form .submit-btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  opacity: 0.7;
+}

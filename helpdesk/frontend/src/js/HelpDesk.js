@@ -3,6 +3,7 @@
  * */
 import TicketView from './TicketView';
 import TicketForm from './TicketForm';
+import ConfirmModal from './ConfirmModal';
 
 export default class HelpDesk {
   constructor(container, ticketService) {
@@ -50,7 +51,7 @@ export default class HelpDesk {
 
     this.tickets.forEach((ticket) => {
       const ticketEl = TicketView.createTicketElement(ticket);
-      list.appendChild(ticketEl);
+      list.append(ticketEl);
     });
   }
 
@@ -102,28 +103,65 @@ export default class HelpDesk {
     }
   }
 
+  // showTicketForm(ticket = null) {
+  //   const form = TicketForm.createForm(ticket);
+  //   this.container.append(form);
+  //
+  //   form.addEventListener('submit', async (e) => {
+  //     e.preventDefault();
+  //     const formData = new FormData(form);
+  //     const data = {
+  //       name: formData.get('name'),
+  //       description: formData.get('description'),
+  //     };
+  //
+  //     try {
+  //       if (ticket) {
+  //         await this.ticketService.update(ticket.id, data);
+  //       } else {
+  //         await this.ticketService.create(data);
+  //       }
+  //       form.remove();
+  //       this.loadTickets();
+  //     } catch (error) {
+  //       console.error('Error saving ticket:', error);
+  //     }
+  //   });
+  //
+  //   form.querySelector('.cancel-btn').addEventListener('click', () => {
+  //     form.remove();
+  //   });
+  // }
+
   showTicketForm(ticket = null) {
     const form = TicketForm.createForm(ticket);
-    this.container.appendChild(form);
+    this.container.append(form);
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const formData = new FormData(form);
-      const data = {
-        name: formData.get('name'),
-        description: formData.get('description'),
-      };
+
+      const nameInput = form.querySelector('input[name="name"]');
+      const descInput = form.querySelector('textarea[name="description"]');
+
+      // Удаляем пробелы в начале и конце
+      const name = nameInput.value.trim();
+      const description = descInput.value.trim();
+
+      if (!name) {
+        form.querySelector('.form-error').textContent = 'Название обязательно';
+        return;
+      }
 
       try {
         if (ticket) {
-          await this.ticketService.update(ticket.id, data);
+          await this.ticketService.update(ticket.id, { name, description });
         } else {
-          await this.ticketService.create(data);
+          await this.ticketService.create({ name, description });
         }
         form.remove();
         this.loadTickets();
       } catch (error) {
-        console.error('Error saving ticket:', error);
+        form.querySelector('.form-error').textContent = `Ошибка: ${error.message}`;
       }
     });
 
@@ -133,13 +171,20 @@ export default class HelpDesk {
   }
 
   async deleteTicket(id) {
-    if (!window.confirm('Вы уверены, что хотите удалить тикет?')) return;
+    const ticket = this.tickets.find((t) => t.id === id);
+    if (!ticket) return;
+
+    const isConfirmed = await ConfirmModal.create(
+      `Вы уверены, что хотите удалить тикет "${ticket.name}"? Это действие необратимо.`,
+    );
+
+    if (!isConfirmed) return;
 
     try {
       await this.ticketService.delete(id);
       this.loadTickets();
     } catch (error) {
-      console.error('Error deleting ticket:', error);
+      this.showError(`Ошибка при удалении: ${error.message}`);
     }
   }
 }
